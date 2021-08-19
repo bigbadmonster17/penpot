@@ -1436,5 +1436,40 @@
       }
     }
   }
+}
 
+.cap-select {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-bottom-color: $color-gray-40;
+  color: $color-gray-10;
+  cursor: pointer;
+  font-size: $fs11;
+  margin: $x-small;
+  overflow: hidden;
+  padding: $x-small;
+  padding-right: 16px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+
+  & .cap-select-button {
+    svg {
+      fill: $color-gray-10;
+      height: 11px;
+      position: absolute;
+      right: 5px;
+      top: 6px;
+      width: 11px;
+    }
+  }
+
+  &:hover {
+    border-color: $color-gray-40;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
 }

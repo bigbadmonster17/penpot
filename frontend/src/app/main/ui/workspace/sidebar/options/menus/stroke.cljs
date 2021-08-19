@@ -44,6 +44,23 @@
     ""
     (pr-str value)))
 
+(def stroke-cap-names
+  [[""                (tr "workspace.options.stroke-cap.none")]
+   [":line-arrow"     (tr "workspace.options.stroke-cap.line-arrow")]
+   [":triangle-arrow" (tr "workspace.options.stroke-cap.triangle-arrow")]
+   [":square-marker"  (tr "workspace.options.stroke-cap.square-marker")]
+   [":circle-marker"  (tr "workspace.options.stroke-cap.circle-marker")]
+   [":diamond-marker" (tr "workspace.options.stroke-cap.diamond-marker")]
+   [":round"          (tr "workspace.options.stroke-cap.round")]
+   [":square"         (tr "workspace.options.stroke-cap.square")]])
+
+(defn- value->name [value]
+  (if (= value :multiple)
+    "--"
+    (let [value-str (if value (pr-str value) "")]
+      (-> (d/seek #(= (first %) value-str) stroke-cap-names)
+          (second)))))
+
 (mf/defc stroke-menu
   {::mf/wrap [#(mf/memo' % (mf/check-props ["ids" "values" "type" "show-caps"]))]}
   [{:keys [ids type values show-caps] :as props}]
@@ -196,6 +213,20 @@
           [:option {:value ":dashed"} (tr "workspace.options.stroke.dashed")]
           [:option {:value ":mixed"} (tr "workspace.options.stroke.mixed")]]]
 
+        [:div.row-flex
+         [:div.cap-select {:tab-index 0}
+          (value->name (:stroke-cap-start values))
+          [:span.cap-select-button
+             i/arrow-down]]
+
+         [:div.element-set-actions-button {:on-click on-stroke-cap-switch}
+          i/switch]
+
+         [:div.cap-select {:tab-index 0}
+          (value->name (:stroke-cap-end values))
+          [:span.cap-select-button
+             i/arrow-down]]]
+
         ;; Stroke Caps
         (when show-caps
           [:div.row-flex
@@ -203,14 +234,8 @@
                                         :on-change on-stroke-cap-start-change}
             (when (= (:stroke-cap-start values) :multiple)
               [:option {:value ""} "--"])
-            [:option {:value ""} (tr "workspace.options.stroke-cap.none")]
-            [:option {:value ":line-arrow"} (tr "workspace.options.stroke-cap.line-arrow")]
-            [:option {:value ":triangle-arrow"} (tr "workspace.options.stroke-cap.triangle-arrow")]
-            [:option {:value ":square-marker"} (tr "workspace.options.stroke-cap.square-marker")]
-            [:option {:value ":circle-marker"} (tr "workspace.options.stroke-cap.circle-marker")]
-            [:option {:value ":diamond-marker"} (tr "workspace.options.stroke-cap.diamond-marker")]
-            [:option {:value ":round"} (tr "workspace.options.stroke-cap.round")]
-            [:option {:value ":square"} (tr "workspace.options.stroke-cap.square")]]
+            (for [[value name] stroke-cap-names]
+              [:option {:value value} name])]
 
            [:div.element-set-actions-button {:on-click on-stroke-cap-switch}
             i/switch]
@@ -219,14 +244,8 @@
                                         :on-change on-stroke-cap-end-change}
             (when (= (:stroke-cap-end values) :multiple)
               [:option {:value ""} "--"])
-            [:option {:value ""} (tr "workspace.options.stroke-cap.none")]
-            [:option {:value ":line-arrow"} (tr "workspace.options.stroke-cap.line-arrow")]
-            [:option {:value ":triangle-arrow"} (tr "workspace.options.stroke-cap.triangle-arrow")]
-            [:option {:value ":square-marker"} (tr "workspace.options.stroke-cap.square-marker")]
-            [:option {:value ":circle-marker"} (tr "workspace.options.stroke-cap.circle-marker")]
-            [:option {:value ":diamond-marker"} (tr "workspace.options.stroke-cap.diamond-marker")]
-            [:option {:value ":round"} (tr "workspace.options.stroke-cap.round")]
-            [:option {:value ":square"} (tr "workspace.options.stroke-cap.square")]]])]]
+            (for [[value name] stroke-cap-names]
+              [:option {:value value} name])]])]]
 
       ;; NO STROKE
       [:div.element-set
